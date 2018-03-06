@@ -33,7 +33,36 @@ def make_link(Graph, node1, node2):
 
   return Graph
 
-if __name__ == '__main__':
+def marked_node(Graph, node, marked):
+  # node is the STARTING NODE
+  # Mark node if it is unmarked
+  marked[node] = 'True'
+  total_marked = 1
+  # Check Graph information to find neighboring nodes.
+  # Graph = {'LAX':{'DAE':1}, 'DAE':{'LAX':1,'ORD':1} ... }
+  # BASE CASE: When it reaches the ends of the graph.
+  for n_node in Graph[node]:
+    if n_node not in marked:
+      total_marked += marked_node(Graph, n_node, marked)
+  return total_marked
+        
+def list_node_sizes(Graph):
+  marked = {} #??
+  for node in Graph.keys():
+    if node is not in marked:
+      print('Graph ',Graph,' containing', node, ':', marked_node(Graph, node, marked))
+
+def is_connected(Graph, node1, node2):
+  # Start from node1 to node2, returning TRUE or FALSE
+  marked = {}
+  # Mark all the nodes with the same function
+  marked_node(Graph,node,marked)
+  if node2 in marked:
+    return 'TRUE'
+  else:
+    return 'FALSE'
+
+def construct_graph(Graph):
   flights = []
   # Insert TUPLE values!
   flights.append(('LAX','DFW'))
@@ -41,7 +70,11 @@ if __name__ == '__main__':
   flights.append(('ORD','LAX'))
   flights.append(('ORD','SAE'))
   
-for (x,y) in flights:
-  print(make_link(GRAPH,x,y))
+  for (x,y) in flights:
+    make_link(Graph,x,y)
+  
+  return Graph
 
+if __name__ == '__main__':
+  construct_graph(GRAPH)
 
