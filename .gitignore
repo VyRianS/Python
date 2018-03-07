@@ -1,2 +1,5 @@
+# Ignore object files
 *.[oa]
+
+# Ignore temp files
 *~
