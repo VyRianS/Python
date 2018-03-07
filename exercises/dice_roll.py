@@ -4,6 +4,7 @@
 
 import random
 
+# Globals
 ROUND = 0
 MIN_ROLL = 1
 MAX_ROLL = 99
