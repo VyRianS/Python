@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # For Python3+ raw_input() has been renamed to input()
     user_input = input('Do you wish to continue? (Y/N) [Y] ')
 
-    # Check for empty input
+    # If user input is empty, set to Y 
     if not user_input:
       user_input = 'Y'
  
