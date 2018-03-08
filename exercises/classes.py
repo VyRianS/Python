@@ -4,6 +4,13 @@
 
 class MyClass:
 
+  # Data attributes will OVERRIDE class methods
+  # Best to have a convention for class methods
+  # Maybe start method name with a _
+
+  # this variable is shared by ALL instances of this class
+  # unbound_list = []
+
   # Default initialization method
   # Will be called when class is instantialized
   def __init__(self, realpart, imagpart):
@@ -13,27 +20,24 @@ class MyClass:
   def f(self):
     return 'Helloworld!'
 
-class Dog:
+class Reverse:
 
-  # Data attributes will OVERRIDE class methods
-  # Best to have a convention for class methods
-  # Maybe start method name with a _
+  def __init__(self,data):
+    self.data = data
+    self.index = len(data)
 
-  # this variable is shared by ALL instances of this class
-  # tricks = []
+  # Use __iter__(self) to return the object with a __next__(self) for iteration
+  def __iter__(self):
+    return self
 
-  def __init__(self,name):
-    self.name = name
-    self.tricks = []
-
-  def _add_trick(self, trick):
-    self.tricks.append(trick)
-
-  def _show_tricks(self):
-    return self.tricks
+  def __next__(self):
+    if self.index == 0:
+      raise StopIteration
+    self.index -= 1
+    return self.data[self.index]
 
 if __name__ == '__main__':
-  d = Dog('Fido')
-  d._add_trick('roll over')
-  d._add_trick('play dead')
-  print(d._show_tricks())
+  x = Reverse('spam')
+  iter(x)
+  for char in x:
+    print(char)
