@@ -29,8 +29,6 @@ def parse(string):
     print('No options or arguments detected.')
     return None
 
-  # Load options into respective pools
-
   #print('Tokens:', TOKEN_LIST) 
   #print('Discarded:', DISCARDED_OPTIONS)
   #print('Valid options:', VALID_OPTIONS)
