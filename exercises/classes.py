@@ -36,8 +36,31 @@ class Reverse:
     self.index -= 1
     return self.data[self.index]
 
+# Functions only get one chance to return a result,
+# and thus must return all results AT ONCE.
+# What if the dataset was incredibly large and processing
+# the entire set was not feasible?
+
+# Generators solve this by returning only the NEXT value,
+# rather than returning all at once.
+
+# Generator, function uses YIELD instead of RETURN
+def reverse(data):
+  for index in range(len(data)-1, -1, -1):
+    yield data[index]
+
 if __name__ == '__main__':
-  x = Reverse('spam')
-  iter(x)
-  for char in x:
-    print(char)
+
+  y = reverse('spam')
+  print(next(y))
+  print(next(y))
+  print(next(y))
+  print(next(y))
+  print(next(y))
+  print(next(y))
+
+  # Iterators
+  #x = Reverse('spam')
+  #for char in (x):
+  #  print(char)
+
