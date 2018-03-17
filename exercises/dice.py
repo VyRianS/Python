@@ -16,20 +16,18 @@ class DiceClass():
         self.min_roll = input('Lowest boundary: [1] ') or 1
 
         # Check that max_roll is greater than min_roll
-        self.max_roll = input('Highest boundary: [6] ') or 6
         while True:
+            self.max_roll = input('Highest boundary: [6] ') or 6
             if int(self.max_roll) <= int(self.min_roll):
                 print('Invalid value, too low.')
-                self.max_roll = input('Highest boundary: [6] ') or 6
             else:
                 break
 
         # Check that length is not negative
-        self.max_record_length = input('Number of rolls to record: [10] ') or 10
         while True:
+            self.max_record_length = input('Number of rolls to record: [10] ') or 10
             if int(self.max_record_length) <= 0:
                 print('At least 1 record must be kept.')
-                self.max_record_length = input('Number of rolls to record: [10] ') or 10
             else:
                 break
 
