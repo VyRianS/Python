@@ -137,7 +137,7 @@ if __name__ == '__main__':
         x._RollDice()
         x._DisplayRecords()
 
-        # PromptContinue() will change flag x.running based on user input
+        # Change flag x.running based on user input
         x._PromptContinue()
             
     print('Execution complete.')
