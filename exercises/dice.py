@@ -13,7 +13,7 @@ class DiceClass():
         self.default_min_roll = 1
         self.default_record_length = 10
 
-    def _PromptMinRoll(self):
+    def PromptMinRoll(self):
 
         while True:
             self.min_roll = input('Lowest boundary: ')
@@ -32,7 +32,7 @@ class DiceClass():
             # Input is valid at this point
             return self.min_roll
 
-    def _PromptMaxRoll(self):
+    def PromptMaxRoll(self):
 
         while True:
             self.max_roll = input('Highest boundary: ')
@@ -54,7 +54,7 @@ class DiceClass():
             # Input is valid at this point
             return self.max_roll
 
-    def _PromptRecordLength(self):
+    def PromptRecordLength(self):
 
         while True:
             self.record_length = input('Maximum records: ')
@@ -76,7 +76,7 @@ class DiceClass():
             # Input is valid at this point
             return self.record_length
     
-    def _PromptContinue(self):
+    def PromptContinue(self):
 
         while True:
             self.user_continue = input('Do you wish to continue? (Y/N) ')
@@ -97,22 +97,22 @@ class DiceClass():
             self.running = 1
             return self.running
 
-    def _DisplayState(self):
+    def DisplayState(self):
         print('Simulating a', self.max_roll, 'sided dice ...')
         print('MIN_ROLL =', self.min_roll, ' MAX_ROLL =', self.max_roll)
 
-    def _DisplayRecords(self):
+    def DisplayRecords(self):
         print(self.result_list)
 
-    def _DisplayAverage(self):
-        print('Average of last,' self.record_length, 'results:',sum(self.result_list)/float(len(self.result_list)))
+    def DisplayAverage(self):
+        print('Average of last', self.record_length, 'results:',sum(self.result_list)/float(len(self.result_list)))
 
-    def _ResetRound(self):
+    def ResetRound(self):
         self.round_count= 0
         self.result_list.clear()
         return self.round_count
 
-    def _RollDice(self):
+    def RollDice(self):
         self.round_count += 1
         self.result = random.randint(int(self.min_roll), int(self.max_roll))
         print('Round', self.round_count, '- rolled', self.result)
@@ -127,17 +127,17 @@ if __name__ == '__main__':
     x = DiceClass()
 
     # User input for initial state
-    x._PromptMinRoll()
-    x._PromptMaxRoll()
-    x._PromptRecordLength()
-    x._DisplayState()
+    x.PromptMinRoll()
+    x.PromptMaxRoll()
+    x.PromptRecordLength()
+    x.DisplayState()
 
     # Game loop, x.running init with 1
     while x.running:
-        x._RollDice()
-        x._DisplayRecords()
+        x.RollDice()
+        x.DisplayRecords()
 
         # Change flag x.running based on user input
-        x._PromptContinue()
+        x.PromptContinue()
             
     print('Execution complete.')
