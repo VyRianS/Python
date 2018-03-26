@@ -14,8 +14,14 @@ class Sequence():
                  seqlock=0, 
                  cycle=True, 
                  cache=1):
- 
-        # Constructors
+
+        # Constructor checks 
+        if not all(isinstance(self.c, int) for self.c in [startval, minval, maxval, stepval, cache]):
+            # TODO: returns value instead of constructor
+            # TODO: self.c is called before assignment?
+            raise ValueError('Constructor', self.c, 'is not of type INT!') 
+
+        # Constructor assignment
         self.sequence = startval   # Current sequence value
         self.minval = minval       # Minimum boundary
         self.maxval = maxval       # Maximum boundary
@@ -23,18 +29,14 @@ class Sequence():
         self.seqlock = seqlock     # No lock acquired upon creation, unless seqlock = 1
         self.cycle = cycle         # Cycle to minval upon reaching max
         self.cache = cache         # 0 = nocache, otherwise cache length
-        self.c = None              # Iterative counter
 
         # Internal
+        self.c = None              # Iterative counter
         self.seqbuffer = startval  # Single value buffer for immediate next value
         self.SEQCACHE = []
 
         # Initialization methods
-        self.PopulateCache()       # Populate cache entries
-
-        if not all(isinstance(self.c, int) for self.c in [startval, minval, maxval, stepval, cache]):
-            # TODO: returns value instead of constructor
-            raise ValueError('Constructor', self.c, 'is not of type INT!') 
+        self.PopulateCache()
 
     def GenerateNextSeq(self):
         if self.seqbuffer + self.stepval > self.maxval:
@@ -53,6 +55,9 @@ class Sequence():
 
     def GetCache(self):
         return self.SEQCACHE
+
+    def GetLockStatus(self):
+        return self.seqlock
 
     def GetNextSeq(self):
         if not self.AcquireLock():
@@ -85,23 +90,26 @@ class Sequence():
 
 if __name__ == '__main__':
 
-    testseq = Sequence(startval=8, minval='asd', maxval=23)
+    testseq = Sequence(startval=8, minval=1, maxval=23)
 
     seq = Sequence(startval=1, minval=0, maxval=23, stepval=7, cache=3, cycle=True)
 
-    print(seq.GetCurrentSeq())
     seq.GetNextSeq()
     seq.GetNextSeq()
     seq.GetNextSeq()
     seq.GetNextSeq()
     seq.GetNextSeq()
+    print(seq.GetLockStatus())
 
+    print(seq.GetCache())
     seq.AcquireLock()
 
     seq.GetNextSeq()
+    print(seq.GetLockStatus())
     seq.GetNextSeq()
 
     seq.ReleaseLock()
+    print(seq.GetCache())
 
     seq.GetNextSeq()
     seq.GetNextSeq()
