@@ -13,48 +13,61 @@ class Sequence():
                  stepval=1, 
                  seqlock=0, 
                  cycle=True, 
-                 cache=5):
+                 cache=1):
  
         self.minval = minval
         self.maxval = maxval
         self.stepval = stepval
         self.sequence = startval
-        self.seqlock = seqlock   # No lock acquired upon creation
+        self.seqlock = seqlock   # No lock acquired upon creation, unless seqlock = 1
         self.cycle = cycle       # Cycle to minval upon reaching max
         self.cache = cache       # 0 = nocache, otherwise cache length
         self.maxflag = 0
 
         # Internal
-        self.seqbuffer = 0       # Buffer to insert into cache
+        self.seqnextval = 0
+        self.seqbuffer = 0       # Single value buffer for immediate next value
+        self.cachebuffer = 0     # To populate cache entries
+        self.cachecounter = 0    # Pointer to track cache entries
         self.SEQCACHE = []
+
+        self.PopulateCache()
+        print(self.SEQCACHE)
+
+    def PopulateCache(self):
+
+        if not self.cache:
+            return 0
+
+        if len(self.SEQCACHE) < self.cache:
+            for i in range(self.cache - len(self.SEQCACHE)):
+                self.SEQCACHE.append(self.NextSeq())
 
     def NextSeq(self):
 
-        if self.sequence + self.stepval > self.maxval:
+        if self.seqbuffer + self.stepval > self.maxval:
             if self.cycle:
-                self.seqbuffer = self.sequence + self.stepval - self.maxval
-            else:
-                self.maxflag = 1
+                self.seqbuffer = self.seqbuffer + self.stepval - self.maxval
         else:
-            self.seqbuffer = self.sequence + self.stepval
+            self.seqbuffer = self.seqbuffer + self.stepval
 
         return self.seqbuffer
 
-    def IncreaseSeq(self):
+    def GetNextSeq(self):
 
         if not self.AcquireLock():
             return 0
 
         # Return value from buffer
-        self.sequence = self.NextSeq()
+        if self.cache:
+            self.seqnextval = self.SEQCACHE.pop(0)
+            print('Current:', self.seqnextval)
+            print('Next:', self.SEQCACHE[0])
+            self.PopulateCache()
+            print('SEQCACHE:', self.SEQCACHE)
 
-        if self.maxflag:
-            print('Unable to increase, sequence would exceed maximum!')
-
-        print('Current:', self.sequence)
-        print('Next:', self.NextSeq())
         self.ReleaseLock()
-        return 1
+        return self.seqnextval
 
     def AcquireLock(self):
         if not self.seqlock:
@@ -73,17 +86,23 @@ class Sequence():
             return 0
 
 if __name__ == '__main__':
-    seq = Sequence(1,0,63,stepval=7,cycle=True)
+    seq = Sequence(1,0,17,stepval=7, cache=7, cycle=True)
 
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
 
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
-    seq.IncreaseSeq()
+    seq.AcquireLock()
+
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+    seq.GetNextSeq()
+
+    seq.ReleaseLock()
+
+    seq.GetNextSeq()
