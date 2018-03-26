@@ -2,7 +2,7 @@
 
 # SEQUENCE
 # A very simple attempt at a sequence locking system
-# Similar to the Oracle Sequence object, but with single data buffer
+# Similar to the Oracle Sequence object
 
 class Sequence():
 
@@ -15,59 +15,57 @@ class Sequence():
                  cycle=True, 
                  cache=1):
  
-        self.minval = minval
-        self.maxval = maxval
-        self.stepval = stepval
-        self.sequence = startval
-        self.seqlock = seqlock   # No lock acquired upon creation, unless seqlock = 1
-        self.cycle = cycle       # Cycle to minval upon reaching max
-        self.cache = cache       # 0 = nocache, otherwise cache length
-        self.maxflag = 0
+        # Constructors
+        self.sequence = startval   # Current sequence value
+        self.minval = minval       # Minimum boundary
+        self.maxval = maxval       # Maximum boundary
+        self.stepval = stepval     # Increment per step
+        self.seqlock = seqlock     # No lock acquired upon creation, unless seqlock = 1
+        self.cycle = cycle         # Cycle to minval upon reaching max
+        self.cache = cache         # 0 = nocache, otherwise cache length
+        self.c = None              # Iterative counter
 
         # Internal
-        self.seqnextval = 0
-        self.seqbuffer = 0       # Single value buffer for immediate next value
-        self.cachebuffer = 0     # To populate cache entries
-        self.cachecounter = 0    # Pointer to track cache entries
+        self.seqbuffer = startval  # Single value buffer for immediate next value
         self.SEQCACHE = []
 
-        self.PopulateCache()
-        print(self.SEQCACHE)
+        # Initialization methods
+        self.PopulateCache()       # Populate cache entries
 
-    def PopulateCache(self):
+        if not all(isinstance(self.c, int) for self.c in [startval, minval, maxval, stepval, cache]):
+            # TODO: returns value instead of constructor
+            raise ValueError('Constructor', self.c, 'is not of type INT!') 
 
-        if not self.cache:
-            return 0
-
-        if len(self.SEQCACHE) < self.cache:
-            for i in range(self.cache - len(self.SEQCACHE)):
-                self.SEQCACHE.append(self.NextSeq())
-
-    def NextSeq(self):
-
+    def GenerateNextSeq(self):
         if self.seqbuffer + self.stepval > self.maxval:
             if self.cycle:
                 self.seqbuffer = self.seqbuffer + self.stepval - self.maxval
         else:
             self.seqbuffer = self.seqbuffer + self.stepval
-
         return self.seqbuffer
 
-    def GetNextSeq(self):
+    def PopulateCache(self):
+        for i in range(self.cache - len(self.SEQCACHE)):
+            self.SEQCACHE.append(self.GenerateNextSeq())
 
+    def GetCurrentSeq(self):
+        return self.sequence
+
+    def GetCache(self):
+        return self.SEQCACHE
+
+    def GetNextSeq(self):
         if not self.AcquireLock():
             return 0
-
         # Return value from buffer
         if self.cache:
-            self.seqnextval = self.SEQCACHE.pop(0)
-            print('Current:', self.seqnextval)
-            print('Next:', self.SEQCACHE[0])
+            self.sequence = self.SEQCACHE.pop(0)
             self.PopulateCache()
-            print('SEQCACHE:', self.SEQCACHE)
-
+        else:
+            self.sequence = self.GenerateNextSeq()
+        print('Current:', self.sequence)
         self.ReleaseLock()
-        return self.seqnextval
+        return self.sequence
 
     def AcquireLock(self):
         if not self.seqlock:
@@ -76,7 +74,7 @@ class Sequence():
         else:
             print('Unable to obtain lock.')
             return 0
-        
+
     def ReleaseLock(self):
         if self.seqlock:
             self.seqlock = 0
@@ -86,8 +84,12 @@ class Sequence():
             return 0
 
 if __name__ == '__main__':
-    seq = Sequence(1,0,17,stepval=7, cache=7, cycle=True)
 
+    testseq = Sequence(startval=8, minval='asd', maxval=23)
+
+    seq = Sequence(startval=1, minval=0, maxval=23, stepval=7, cache=3, cycle=True)
+
+    print(seq.GetCurrentSeq())
     seq.GetNextSeq()
     seq.GetNextSeq()
     seq.GetNextSeq()
@@ -98,11 +100,9 @@ if __name__ == '__main__':
 
     seq.GetNextSeq()
     seq.GetNextSeq()
-    seq.GetNextSeq()
-    seq.GetNextSeq()
-    seq.GetNextSeq()
-    seq.GetNextSeq()
 
     seq.ReleaseLock()
 
+    seq.GetNextSeq()
+    seq.GetNextSeq()
     seq.GetNextSeq()
