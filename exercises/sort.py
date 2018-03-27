@@ -21,6 +21,7 @@ class sort_class():
     def _GetList(self):
         print('Original list:', self.tmplist) 
 
+    # Looks like a wrong implementation of sort
     def _InsertionSort(self):
         print(' *** INSERTION_SORT *** ')
         for i in reversed(range(1,len(self.tmplist))):
