@@ -29,9 +29,6 @@ def parse(string):
         print('No options or arguments detected.')
         return None
 
-    #print('Tokens:', TOKEN_LIST) 
-    #print('Discarded:', DISCARDED_OPTIONS)
-    #print('Valid options:', VALID_OPTIONS)
     return VALID_OPTIONS # Return dictionary for further processing
 
 if __name__ == '__main__':

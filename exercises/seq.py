@@ -32,7 +32,7 @@ class Sequence():
         self.cache = cache         # 0 = nocache, otherwise cache length
 
         # Internal
-        self.c = None              # Iterative counter
+        self.c = None              # Iterative counter, why is this required?
         self.seqbuffer = startval  # Single value buffer for immediate next value
         self.SEQCACHE = []
 
@@ -52,15 +52,6 @@ class Sequence():
         for i in range(self.cache - len(self.SEQCACHE)):
             self.SEQCACHE.append(self.GenerateNextSeq())
 
-    def GetCurrentSeq(self):
-        return self.sequence
-
-    def GetCache(self):
-        return self.SEQCACHE
-
-    def GetLockStatus(self):
-        return self.seqlock
-
     def GetNextSeq(self):
         if not self.AcquireLock():
             return 0
@@ -73,6 +64,15 @@ class Sequence():
         print('Current:', self.sequence)
         self.ReleaseLock()
         return self.sequence
+
+    def GetCurrentSeq(self):
+        return self.sequence
+
+    def GetCache(self):
+        return self.SEQCACHE
+
+    def GetLockStatus(self):
+        return self.seqlock
 
     def AcquireLock(self):
         if not self.seqlock:
