@@ -23,6 +23,12 @@ class Sequence():
             # TODO: self.c is called before assignment?
             raise ValueError('Variable', self.c, 'is not of type INT!') 
 
+        if startval < minval:
+            raise ValueError('Starting sequence is smaller than minimum value.')
+
+        if minval > maxval:
+            raise ValueError('Mininum value is greater than maximum value.')
+
         self.sequence = startval   # Current sequence value
         self.minval = minval       # Minimum boundary
         self.maxval = maxval       # Maximum boundary
@@ -92,6 +98,7 @@ class Sequence():
 
 if __name__ == '__main__':
 
+    testseq = Sequence(startval=1, minval=1, maxval=0, stepval=1) 
     seq = Sequence(startval=1, minval=0, maxval=23, stepval=7, cache=3, cycle=1)
 
     seq.GetNextSeq()
