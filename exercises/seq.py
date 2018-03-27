@@ -1,7 +1,7 @@
 #!/usr/bin/python3.6
 
 # SEQUENCE
-# A very simple attempt at a sequence locking system
+# An attempt to create a sequence locking system
 # Similar to the Oracle Sequence object
 
 class Sequence():
@@ -12,11 +12,13 @@ class Sequence():
                  maxval, 
                  stepval=1, 
                  seqlock=0, 
-                 cycle=True, 
+                 cycle=1, 
                  cache=1):
 
         # Constructor checks 
-        if not all(isinstance(self.c, int) for self.c in [startval, minval, maxval, stepval, cache]):
+        if not all(isinstance(self.c, int) for self.c in [startval, minval, 
+                                                          maxval, stepval, 
+                                                          cycle, cache]):
             # TODO: returns value instead of constructor
             # TODO: self.c is called before assignment?
             raise ValueError('Constructor', self.c, 'is not of type INT!') 
@@ -47,6 +49,7 @@ class Sequence():
         return self.seqbuffer
 
     def PopulateCache(self):
+        # Range(0) does not iterate, no entries inserted when cache is full
         for i in range(self.cache - len(self.SEQCACHE)):
             self.SEQCACHE.append(self.GenerateNextSeq())
 
@@ -90,9 +93,7 @@ class Sequence():
 
 if __name__ == '__main__':
 
-    testseq = Sequence(startval=8, minval=1, maxval=23)
-
-    seq = Sequence(startval=1, minval=0, maxval=23, stepval=7, cache=3, cycle=True)
+    seq = Sequence(startval=1, minval=0, maxval=23, stepval=7, cache=3, cycle=1)
 
     seq.GetNextSeq()
     seq.GetNextSeq()
