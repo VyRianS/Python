@@ -19,11 +19,10 @@ class Sequence():
         if not all(isinstance(self.c, int) for self.c in [startval, minval, 
                                                           maxval, stepval, 
                                                           cycle, cache]):
-            # TODO: returns value instead of constructor
+            # TODO: returns value instead of variable name
             # TODO: self.c is called before assignment?
-            raise ValueError('Constructor', self.c, 'is not of type INT!') 
+            raise ValueError('Variable', self.c, 'is not of type INT!') 
 
-        # Constructor assignment
         self.sequence = startval   # Current sequence value
         self.minval = minval       # Minimum boundary
         self.maxval = maxval       # Maximum boundary
@@ -37,7 +36,7 @@ class Sequence():
         self.seqbuffer = startval  # Single value buffer for immediate next value
         self.SEQCACHE = []
 
-        # Initialization methods
+        # Constructors
         self.PopulateCache()
 
     def GenerateNextSeq(self):
