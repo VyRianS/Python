@@ -6,7 +6,12 @@ import math
 
 class Runner():
 
-    def __init__(self, run_list, start_position=(0,0), returnhome=False):
+    def __init__(self, 
+                 run_list, 
+                 start_position=(0,0), 
+                 returnhome=False, 
+                 show_stats=False):
+
         self.start_position = start_position
         self.position = start_position
         self.total_dist = 0
@@ -14,6 +19,7 @@ class Runner():
         self.VISITED = []
         self.RECORD = {}
         self.returnhome = returnhome
+        self.show_stats = show_stats
 
     def MovePoint(self, point):
         self.dist_to_next = self.GetDist(point)
@@ -61,12 +67,14 @@ class Runner():
         self.DisplayDist()
 
     def DisplayStatus(self):
-        print('Current -', x.GetPosition())
-        print('VISITED -', x.GetVisited())
-        print('RECORD -', x.GetRecords())
+        if self.show_stats:
+            print('Current -', x.GetPosition())
+            print('VISITED -', x.GetVisited())
+            print('RECORD -', x.GetRecords())
 
     def DisplayDist(self):
-        print('Total distance -', self.total_dist)
+        if self.show_stats:
+            print('Total distance -', self.total_dist)
 
     def SetRecord(self, point, dist):
         self.RECORD[point] = dist
@@ -90,6 +98,6 @@ class Runner():
 if __name__ == '__main__':
 
     POINTS = [(4.,3.),(3.,2.),(1.,5.),(2.5,2.4),(6.,0.7)]
-    x = Runner(start_position=(-2,-3.4), run_list=POINTS, returnhome=True)
+    x = Runner(start_position=(-2,-3.4), run_list=POINTS, returnhome=True, show_stats=True)
     x.StartRun()
 
