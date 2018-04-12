@@ -7,7 +7,9 @@
 # Empty data is -1
 MEMORY = [-1 for x in range(100)]
 
-# Try to do everything using the pointer
+# Currently using too many Python-specific functions
+# Try to do everything using the pointer to simulate lower-level behavior
+
 class ArrayClass():
 
     def __init__(self, address_head, length):
@@ -29,6 +31,10 @@ class ArrayClass():
 
     def _ResetPtr(self):
         self.pointer = self.address_head + 1
+        return self.pointer
+
+    def _MovePtr(self, new_pos):
+        self.pointer += new_pos
         return self.pointer
 
     def _GetPtrPos(self):
