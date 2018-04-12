@@ -4,7 +4,7 @@
 
 # Memory is a static length list of 100 addresses
 # Memory addresses are the list indexes
-# Empty data is 0
+# Empty data is -1
 MEMORY = [-1 for x in range(100)]
 
 # Try to do everything using the pointer
