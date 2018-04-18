@@ -44,8 +44,6 @@ class ArrayClass():
         # constant time movement of pointer
         self._MovePtr(index)
         MEMORY[self.pointer] = self.emptyflag
-
-        # Reset pointer
         self._ResetPtr()
         return 0
 
@@ -60,11 +58,8 @@ class ArrayClass():
             print('SEGFAULT - Index at', index, 'is already filled!')
             return 1
 
-        # Pointer movement is constant time due to addition of addresses
         self._MovePtr(index)
         MEMORY[self.pointer] = value
-
-        # Reset pointer
         self._ResetPtr()
         return 0
 
@@ -77,7 +72,7 @@ if __name__ == '__main__':
     a.ArrayInsert(0,'pos0')
     a.ArrayInsert(4,'pos4')
     a.ArrayInsert(5,'segfault')
-    a.ArrayInsert(2,'runtime-OLAJGSD)@NSLD')
+    a.ArrayInsert(2,'data00')
     a.ArrayDelete(2)
     print(a.GetArray())
 
@@ -86,7 +81,7 @@ if __name__ == '__main__':
     b.ArrayInsert(3,'NA')
     print(b.GetArray())
 
-    print('MEMORY length:', len(MEMORY))
-    print('First 10:', MEMORY[:10])
-    print('Last 10:', MEMORY[-10:]) 
+    #print('MEMORY length:', len(MEMORY))
+    #print('First 10:', MEMORY[:10])
+    #print('Last 10:', MEMORY[-10:]) 
 
