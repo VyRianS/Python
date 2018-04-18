@@ -4,33 +4,23 @@
 
 # Memory is a static length list of 100 addresses
 # Memory addresses are the list indexes
-# Empty data is -1
-MEMORY = [-1 for x in range(100)]
+# Empty data is 'None'
+MEMORY = [None for x in range(100)]
 
 # Currently using too many Python-specific functions
 # Try to do everything using the pointer to simulate lower-level behavior
 
 class ArrayClass():
 
-    def __init__(self, address_head, length):
-        self.address_head = address_head
-        self.address_tail = address_head + length + 1
+    def __init__(self, head, length):
+        self.head = head
+        self.tail = head + length - 1   # due to 0-indexing
         self.length = length
-        self.pointer = self.address_head + 1 # Point to the first empty address
-        self.emptyflag = -1
-
-        # Insert array's head and tail markers
-        # Data can only be inserted between these markers
-        self.headmarker = self.address_head + 1
-        self.tailmarker = self.address_tail
-
-        MEMORY.pop(self.address_head)
-        MEMORY.insert(self.address_head, 'H:'+str(self.address_head))
-        MEMORY.pop(self.address_tail)
-        MEMORY.insert(self.address_tail, 'T:'+str(self.address_tail))
+        self.pointer = self.head        # Point to the first empty address
+        self.emptyflag = None
 
     def _ResetPtr(self):
-        self.pointer = self.address_head + 1
+        self.pointer = self.head
         return self.pointer
 
     def _MovePtr(self, new_pos):
@@ -41,13 +31,13 @@ class ArrayClass():
         return self.pointer
 
     def ArrayDelete(self, index):
-        address_delete = self.address_head + index + 1
+        address_delete = self.head + index
 
-        if address_delete > self.address_tail:
+        if address_delete > self.tail:
             print('SEGFAULT - Array delete out of bounds!')
             return 1
 
-        if MEMORY[address_delete] == -1:
+        if MEMORY[address_delete] == self.emptyflag:
             print('ERROR - Value at index', index, 'is already empty!')
             return 1
 
@@ -60,41 +50,38 @@ class ArrayClass():
         return 0
 
     def ArrayInsert(self, index, value):
-        address_insert = self.address_head + index + 1
+        address_insert = self.head + index
 
-        if address_insert > self.address_tail:
+        if address_insert > self.tail:
             print('SEGFAULT - Array insert out of bounds!')
             return 1
 
-        if MEMORY[address_insert] != -1:
+        if MEMORY[address_insert] != self.emptyflag:
             print('SEGFAULT - Index at', index, 'is already filled!')
             return 1
 
         # Pointer movement is constant time due to addition of addresses
         self._MovePtr(index)
-        MEMORY.pop(self.pointer)
-        MEMORY.insert(self.pointer, value)
+        MEMORY[self.pointer] = value
 
         # Reset pointer
         self._ResetPtr()
         return 0
 
     def GetArray(self):
-        return MEMORY[self.headmarker:self.tailmarker]
+        return MEMORY[self.head:self.tail+1]
 
 if __name__ == '__main__':
     
-    a = ArrayClass(address_head=0, length=10)
+    a = ArrayClass(head=0, length=5)
     a.ArrayInsert(0,'pos0')
-    print(a.GetArray())
-    a.ArrayInsert(9,'pos10')
-    print(a.GetArray())
+    a.ArrayInsert(4,'pos4')
+    a.ArrayInsert(5,'segfault')
     a.ArrayInsert(2,'runtime-OLAJGSD)@NSLD')
-    print(a.GetArray())
     a.ArrayDelete(2)
     print(a.GetArray())
 
-    b = ArrayClass(address_head=94, length=4)
+    b = ArrayClass(head=94, length=4)
     b.ArrayInsert(0,'pos0')
     b.ArrayInsert(3,'NA')
     print(b.GetArray())
