@@ -1,2 +1,2 @@
 # Python
-All my Python projects.
+My Python playground.
