@@ -41,7 +41,7 @@ class ArrayClass():
             print('ERROR - Value at index', index, 'is already empty!')
             return 1
 
-        # constant time movement of pointer
+        # O(1) time to move pointer regardless of struct length
         self._MovePtr(index)
         MEMORY[self.pointer] = self.emptyflag
         self._ResetPtr()
