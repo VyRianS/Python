@@ -13,7 +13,7 @@ class MemoryBuffer:
         self.OBJLOOKUP = {}
         self.ptr = 0         # Main pointer for class
         self.ptr_hwm = 0     # Pointer to high-water-mark in buffer
-        self.allowed_types = ('S_Array','D_Array','S_List','D_List')
+        self.allowed_types = ('S_Array','D_Array')
 
     def GetBuf(self):
         return self.BUFFER
