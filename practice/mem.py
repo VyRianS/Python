@@ -34,6 +34,10 @@ class MemoryBuffer:
         return self.ptr
     ##############################
 
+    def PrintError(self, method, message):
+        print(method, '-', message)
+        return 0
+
     def FlushBuf(self):
         for i in range(len(self.BUFFER)):
             if self.BUFFER[i] != self.emptyflag:
@@ -43,11 +47,11 @@ class MemoryBuffer:
 
     def AllocBuf(self, name, objtype, head, length):
         if objtype not in self.allowed_types:
-            print('AllocBuf - Unknown object type!')
+            self.PrintError('AllocBuf','Unknown object type!')
             return 1
 
         if head + length - 1 > len(self.BUFFER):
-            print('AllocBuf - Out of allocated memory bounds!')
+            self.PrintError('AllocBuf','Out of allocated memory bounds!')
             return 1
 
         self.OBJLOOKUP[name] = (objtype, head, head+length-1)
@@ -56,7 +60,7 @@ class MemoryBuffer:
     def FreeBuf(self, name, defrag=False):
         # Deletes object and frees buffer
         if name not in self.OBJLOOKUP.keys():
-            print('FreeBuf - Object does not exist in lookup!')
+            self.PrintError('FreeBuf','Object does not exist in lookup!')
             return 1
         head = self.GetObjBounds(name)[1]
         tail = self.GetObjBounds(name)[2]
@@ -68,7 +72,7 @@ class MemoryBuffer:
     def GetObjBounds(self, name):
         # Returns object type, head, and tail addresses as a list
         if name not in self.OBJLOOKUP.keys():
-            print('GetObjBounds - Object does not exist in lookup!')
+            self.PrintError('GetObjBounds','Object does not exist in lookup!')
             return 1
         return list(self.OBJLOOKUP[name])
 
@@ -76,19 +80,19 @@ class MemoryBuffer:
         # Sets value in memory, assuming it is already allocated
         # head is position 0, tail is position (length-1)
         if name not in self.OBJLOOKUP.keys():
-            print('SetValue - Object does not exist in lookup!')
+            self.PrintError('SetValue','Object does not exist in lookup!')
             return 1
         head = self.GetObjBounds(name)[1]
         tail = self.GetObjBounds(name)[2]
         if pos < 0 or (pos + head) > tail:
-            print('SetValue - Invalid relative object index!')
+            self.PrintError('SetValue','Invalid relative object index!')
             return 1
         self.BUFFER[head+pos] = value
         return 0 
 
     def GetObj(self, name):
         if name not in self.OBJLOOKUP.keys():
-            print('GetObj - Object does not exist in lookup!')
+            print('GetObj','Object does not exist in lookup!')
             return 1
         head = self.GetObjBounds(name)[1]
         tail = self.GetObjBounds(name)[2]
@@ -98,7 +102,7 @@ if __name__ == '__main__':
     x = MemoryBuffer(bufsize=12)
     print(x.AllocBuf(name='dunes', objtype='S_Array', head=1, length=4))
     x.AllocBuf(name='list', objtype='S_Array', head=7, length=3)
-    x.SetValue('dunes', 2, '@!#%') 
+    x.SetValue('dunes', 0, '@!#%') 
     x.SetValue('list', 2, '&&&&&')
     print(x.GetBuf())
     print(x.GetLookup())
