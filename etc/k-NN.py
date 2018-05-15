@@ -40,9 +40,7 @@ if __name__ == '__main__':
     map = MapGenerator()
     print(map.GetMap())
 
-    t = map.GetPoints_X()
-    s = map.GetPoints_Y()
-    plt.scatter(t,s)
+    plt.scatter(*zip(*map.GetMap()))
 
     plt.grid(True)
     plt.title('Test')
