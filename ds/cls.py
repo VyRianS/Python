@@ -27,7 +27,7 @@ class Classifier:
         elif self.dist_type == 'hamming':
             self.df['D-Hamming'] = (self.df['X']-self.df_p['X'].values).abs() + (self.df['Y']-self.df_p['Y'].values).abs()
             self.df_sort = self.df.sort_values('D-Hamming')
-        self.df_result = self.df_sort['Class'].head(self.kpoints+1).tail(self.kpoints)
+        self.df_result = self.df_sort.head(self.kpoints+1).tail(self.kpoints)
 
     def GetResultSet(self):
         return self.df_result
@@ -36,7 +36,7 @@ class Classifier:
         return self.df
 
     def GetClass(self):
-        self.class_result = self.df_result.value_counts().idxmax()
+        self.class_result = self.df_result['Class'].value_counts().idxmax()
         return self.class_result
 
 if __name__ == '__main__':
@@ -45,30 +45,8 @@ if __name__ == '__main__':
     print(cls.GetClass())
     print(cls.GetResultSet())
 
+
     '''
-    df = pd.read_csv('data.csv')
-    df.columns = ['Class','X','Y']
-
-    # Filter dataframe based off Class
-    df_A = df[df['Class'] == 'A']
-    df_B = df[df['Class'] == 'B']
-
-    # Our confused point
-    df_P = df[df['Class'] == '?']
-
-    # Euclidean distance from ?-point
-    df['D-Euclidean'] = ((df['X']-df_P['X'].values).pow(2) + (df['Y']-df_P['Y'].values).pow(2)).pow(0.5)
-
-    # Hamming distance
-    df['D-Hamming'] = (df['X']-df_P['X'].values).abs() + (df['Y']-df_P['Y'].values).abs()
-    print(df)
-
-    # Sort based on Euclidean distance
-    df_sort = df.sort_values('D-Euclidean')
-
-    # Find classification result
-    class_result = df_sort['Class'].head(6).tail(5).value_counts().idxmax()
-    print(class_result)
     # Visualize
     plt.scatter(df_A['X'], df_A['Y'])
     plt.scatter(df_B['X'], df_B['Y'])
