@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 class Classifier:
 
-    def __init__(self, csvfile, kpoints, dist_type='euclidean'):
+    def __init__(self, csvfile, kvalue, dist_type='euclidean'):
         self.csvfile = csvfile       # csvfile to read from via pandas
-        self.kpoints = kpoints       # k nearest points
+        self.kvalue = kvalue        # k nearest points
         self.dist_type = dist_type   # either Euclidean distance, or Hamming
         self._read()
         self._sort()
@@ -27,7 +27,7 @@ class Classifier:
         elif self.dist_type == 'hamming':
             self.df['D-Hamming'] = (self.df['X']-self.df_p['X'].values).abs() + (self.df['Y']-self.df_p['Y'].values).abs()
             self.df_sort = self.df.sort_values('D-Hamming')
-        self.df_result = self.df_sort.head(self.kpoints+1).tail(self.kpoints)
+        self.df_result = self.df_sort.head(self.kvalue+1)
 
     def GetResultSet(self):
         return self.df_result
@@ -36,15 +36,20 @@ class Classifier:
         return self.df
 
     def GetClass(self):
-        self.class_result = self.df_result['Class'].value_counts().idxmax()
+        self.class_result = self.df_result['Class'].tail(self.kvalue).value_counts().idxmax()
         return self.class_result
+
+    def GetDistType(self):
+        return self.dist_type
+
+    def GetKValue(self):
+        return self.kvalue
 
 if __name__ == '__main__':
 
-    cls = Classifier(csvfile='data.csv', kpoints=5, dist_type='hamming')
-    print(cls.GetClass())
+    cls = Classifier(csvfile='testdata.csv', kvalue=10, dist_type='euclidean')
+    print('?-point classified as:', cls.GetClass())
     print(cls.GetResultSet())
-
 
     '''
     # Visualize
