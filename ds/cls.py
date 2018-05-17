@@ -20,6 +20,7 @@ class Classifier:
         self.df.columns = ['Class','X','Y'] 
         self.df_p = self.df[self.df['Class'] == '?']
 
+    # TODO: Fails to work when ?-record is at the top of the data file
     def _sort(self):
         if self.dist_type == 'euclidean':
             self.df['D-Euclidean'] = ((self.df['X']-self.df_p['X'].values).pow(2) + (self.df['Y']-self.df_p['Y'].values).pow(2)).pow(0.5)
@@ -47,7 +48,7 @@ class Classifier:
 
 if __name__ == '__main__':
 
-    cls = Classifier(csvfile='testdata.csv', kvalue=10, dist_type='euclidean')
+    cls = Classifier(csvfile='data.csv', kvalue=10, dist_type='euclidean')
     print('?-point classified as:', cls.GetClass())
     print(cls.GetResultSet())
 
